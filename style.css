@@ -5,9 +5,23 @@ body {
   text-align: center;
   padding-top: 100px;
 }
+
 a {
   display: inline-block;
   margin-top: 20px;
   color: #0066cc;
   text-decoration: none;
+}
+
+input {
+  padding: 10px;
+  font-size: 1em;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1em;
+  margin-left: 10px;
+  cursor: pointer;
 }

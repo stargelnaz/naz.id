@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Enter Your Code</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Enter Your Access Code</h1>
+
+    <form id="code-form">
+      <input
+        type="text"
+        id="access-code"
+        placeholder="Enter your code"
+        required
+      />
+      <button type="submit">Start the Class</button>
+    </form>
+
+    <p id="message" style="color: red"></p>
+
+    <script>
+      document
+        .getElementById('code-form')
+        .addEventListener('submit', function (e) {
+          e.preventDefault();
+          const code = document.getElementById('access-code').value.trim();
+
+          if (!code) {
+            document.getElementById('message').textContent =
+              'Please enter a code.';
+          } else {
+            alert('Code entered: ' + code); // Temporary behavior
+            // Future: call AWS Lambda/API to check code
+          }
+        });
+    </script>
+  </body>
+</html>
