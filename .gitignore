@@ -1,0 +1,11 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore build artifacts
+site/
+dist/
+node_modules/
+
+# VSCode settings (optional)
+.vscode/
