@@ -24,16 +24,41 @@
     <script>
       document
         .getElementById('code-form')
-        .addEventListener('submit', function (e) {
+        .addEventListener('submit', async function (e) {
           e.preventDefault();
           const code = document.getElementById('access-code').value.trim();
+          const message = document.getElementById('message');
+          message.textContent = '';
 
           if (!code) {
-            document.getElementById('message').textContent =
-              'Please enter a code.';
-          } else {
-            alert('Code entered: ' + code); // Temporary behavior
-            // Future: call AWS Lambda/API to check code
+            message.textContent = 'Please enter a code.';
+            return;
+          }
+
+          try {
+            const response = await fetch(
+              'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/verify',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ code: code })
+              }
+            );
+
+            const result = await response.json();
+
+            if (response.ok) {
+              alert('Code accepted for: ' + result.email);
+              // TODO: redirect to MkDocs site here
+              // window.location.href = "/docs/";
+            } else {
+              message.textContent = 'That code is not recognized.';
+            }
+          } catch (err) {
+            message.textContent = 'Error contacting server.';
+            console.error(err);
           }
         });
     </script>
