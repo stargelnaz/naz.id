@@ -24,41 +24,43 @@
     <script>
       document
         .getElementById('code-form')
-        .addEventListener('submit', async function (e) {
+        .addEventListener('submit', async (e) => {
           e.preventDefault();
           const code = document.getElementById('access-code').value.trim();
-          const message = document.getElementById('message');
-          message.textContent = '';
 
-          if (!code) {
-            message.textContent = 'Please enter a code.';
-            return;
-          }
+          const res = await fetch(
+            'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/verify',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code })
+            }
+          );
 
-          try {
-            const response = await fetch(
-              'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/verify',
+          const result = await res.json();
+
+          if (res.status === 200) {
+            // ✅ Valid code: now mark start
+            const startRes = await fetch(
+              'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/start',
               {
                 method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ code: code })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code })
               }
             );
 
-            const result = await response.json();
+            const startResult = await startRes.json();
 
-            if (response.ok) {
-              alert('Code accepted for: ' + result.email);
-              // TODO: redirect to MkDocs site here
-              // window.location.href = "/docs/";
+            if (startRes.status === 200) {
+              alert(`Code accepted for: ${result.email}\nClass started.`);
+              window.location.href = 'https://your-mkdocs-url-here'; // TODO: replace with your actual link
             } else {
-              message.textContent = 'That code is not recognized.';
+              alert('Code valid, but error starting class.');
             }
-          } catch (err) {
-            message.textContent = 'Error contacting server.';
-            console.error(err);
+          } else {
+            document.getElementById('message').textContent =
+              'That code is not recognized.';
           }
         });
     </script>
