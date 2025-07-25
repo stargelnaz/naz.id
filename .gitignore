@@ -9,3 +9,6 @@ node_modules/
 
 # VSCode settings (optional)
 .vscode/
+# Secure Docs
+/secure/
+
