@@ -27,22 +27,12 @@
         .addEventListener('submit', async (e) => {
           e.preventDefault();
           const code = document.getElementById('access-code').value.trim();
+          const message = document.getElementById('message');
+          message.textContent = '';
 
-          const res = await fetch(
-            'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/verify',
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ code })
-            }
-          );
-
-          const result = await res.json();
-
-          if (res.status === 200) {
-            // ✅ Valid code: now mark start
-            const startRes = await fetch(
-              'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/start',
+          try {
+            const res = await fetch(
+              'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/verify',
               {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -50,17 +40,35 @@
               }
             );
 
-            const startResult = await startRes.json();
+            const result = await res.json();
 
-            if (startRes.status === 200) {
-              alert(`Code accepted for: ${result.email}\nClass started.`);
-              window.location.href = '/courses';
+            if (res.status === 200) {
+              const startRes = await fetch(
+                'https://vsz3xwjfrj.execute-api.us-east-1.amazonaws.com/start',
+                {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ code })
+                }
+              );
+
+              const startResult = await startRes.json();
+
+              if (startRes.status === 200) {
+                alert(`Code accepted for: ${result.email}\nClass started.`);
+                window.location.href = '/courses';
+              } else if (startRes.status === 409) {
+                message.textContent = 'That code has already been used.';
+              } else {
+                message.textContent = 'Code valid, but error starting class.';
+              }
+            } else if (res.status === 404) {
+              message.textContent = 'That code is not recognized.';
             } else {
-              alert('Code valid, but error starting class.');
+              message.textContent = 'Unexpected server error.';
             }
-          } else {
-            document.getElementById('message').textContent =
-              'That code is not recognized.';
+          } catch (err) {
+            message.textContent = 'Network error. Please try again.';
           }
         });
     </script>
