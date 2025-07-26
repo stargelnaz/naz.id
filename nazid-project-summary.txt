@@ -1,0 +1,60 @@
+Project: naz.id – Status Summary
+
+Project Structure (Root Directory)
+----------------------------------
+- index.html – Welcome page with two buttons:
+  - "View Documentation" (now positioned at bottom)
+  - "Have a code? Click here." (links to access code form)
+- style.css – Shared CSS for all static pages
+- access.html – Code entry form that:
+  - Verifies the access code via AWS Lambda (/verify)
+  - If valid, records a start time via AWS Lambda (/start)
+  - If already used, shows a clear error message
+  - On success, redirects to /courses/index.html
+
+courses/ Directory
+------------------
+- index.html – Placeholder for your main course dashboard or landing page
+
+docs/ Directory
+---------------
+- index.html – Placeholder for your public-facing documentation or reading material
+
+AWS Infrastructure
+------------------
+- DynamoDB Table: AccessCodes
+  - Keys: code (string), email, startTime (added on first use)
+- Lambda Functions:
+  - nazid-verifyAccessCode: Validates code and returns associated email
+  - nazid-markStart: Adds timestamp if not already started
+- API Gateway:
+  - POST /verify → verifyAccessCode
+  - POST /start → markStart
+  - CORS enabled and functioning
+
+Functionality (Working)
+------------------------
+- Code verification flow with modal feedback
+- Prevents reuse of access codes
+- Conditional timestamping in DynamoDB
+- Error handling and logging in both Lambda functions
+- Basic static routing (Jump button skips verification)
+
+Hosting
+-------
+- Vercel:
+  - Project deployed at: https://naz-id.vercel.app/
+  - Pages:
+    - / → Welcome
+    - /access.html
+    - /courses/
+    - /docs/
+  - Currently a static site with simple HTML/CSS/JS
+
+Next Steps (Suggestions)
+------------------------
+1. Enhance /courses/ with real content or dashboard logic
+2. Build an admin.html to upload or manage codes/emails
+3. Secure Lambda endpoints with API keys or IAM if needed
+4. Add start time display to the /courses/ page for the user
+5. Commit and push regularly when making changes
